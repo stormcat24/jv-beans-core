@@ -1,0 +1,104 @@
+                                    ------
+                                    JV-Beansとは
+                                    ------
+                                    Author(a-yamada)
+                                    ------
+
+JV-Beansとは
+
+  JRAシステムサービスが運営する「JRA-VAN DataLab.」の専用クライアントソフトウェア「JV-Link」をJavaで利用するためのフレームワークです。
+JV-Beansを利用することでJavaで競馬情報システム、ソフトウェアの構築が可能となります。JV-BeansはJV-Link APIのJavaによるラッパーを提供します。
+
+*--------*----------:
+| JV-Beans | JV-Link |
+*--------*----------:
+| 0.3系   | 3.4.0     |
+*--------*----------:
+| 0.2系   | 3.4.0     |
+*--------*----------:
+| 0.1系   | 3.3.0     |
+*--------*----------:
+JV-BeansとJV-Linkのバージョン対応表
+
+
+* News
+
+** 2011/05/05
+
+*** JV-Beans(ver 1.0.0-RC1)、JV-Link-Definitions(3.4.0)をリリースしました。
+
+**** [Bug]
+
+ * JvBindingDto#getFileNameがnullを返してしまう
+
+ * CourceCdのEnum定義にA0, 00を追加
+
+**** [New Features]
+
+ * Jacobを1.15-M2から1.15-M4に変更
+
+** 2010/07/11
+
+*** JV-Beans(ver 0.3.1)、JV-Link-Definitions(3.4.0-RC2)をリリースしました。
+
+**** [Bug]
+
+ * jv-link-definitionsのJarからメタデータを抽出できない(JV-Beans)
+
+ * オッズ、票数の人気順がIntegerのため、NumberFormatException(JV-Link-Definitions)
+
+** 2010/06/13
+
+*** JV-Beans(ver 0.3.0)、JV-Link-Definitions(3.4.0-RC1)をリリースしました。
+
+**** [New Features]
+
+ * JV-BeansからDTO等のJV-Link定義クラスを分離し、JV-Link-Definitionsとして提供
+
+ * JV-DataのCSV・TSV形式でのファイル出力、CSV・TSVファイルからのDTOへバインディング機能
+
+**** [Improve]
+
+ * JvBindingDtoFactory#createメソッドのシグニチャを変更(第2引数Class → OpenConfition）
+
+ * DTOの項目のスペルミス、型を変更
+
+** 2009/12/20
+
+*** ver 0.2.0をリリースしました。
+
+**** [New Features]
+
+ * JV-Link 3.4.0に対応
+
+ * JV-DataをDTOにバインディングしないためのインタフェースを用意(JvLinkManager#simpleOpen, rtSimpleOpen)
+
+
+** 2009/12/12
+
+*** ver 0.1.2をリリースしました。
+
+**** [Bug]
+
+ * 人気順（betRank）のプロパティにデータをバインドする際にNumberFormatException
+
+ * YSCHが持つレコード種別IDが誤り
+
+ * 0B36のレコード種別IDが無い
+
+** 2009/12/06
+
+*** ver 0.1.1をリリースしました。
+
+**** [Bug]
+
+ * {{{http://sourceforge.jp/ticket/browse.php?group_id=4757&tid=19780} JOINしているDTOに値が正しくバインディングできない問題}}
+
+**** [Improve]
+
+ * String型でデータが空の場合には、空文字ではなくnullを設定する
+
+** 2009/11/23
+
+*** ver 0.1.0 をリリースしました。
+

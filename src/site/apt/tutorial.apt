@@ -1,0 +1,299 @@
+                                    ------
+                                    チュートリアル
+                                    ------
+                                    Author(a-yamada)
+                                    ------
+
+チュートリアル
+
+* JV-Linkのドキュメント
+
+  JV-BeansはJV-LinkをJavaで使いやすくするためのフレームワークですが、それなりにJV-Linkの知識も必要となります。
+そのためJRA-VANが開発者向けに提供しているドキュメントも併せて読まれることをお勧めします。
+
+  {{{http://jra-van.jp/dlb/sdv/sdk.html}ソフト開発サポート}}
+ 
+  特に「JV-Data仕様書Excel版（Ver.3.4.0）」と「JV-Linkインターフェース（Win版）仕様書（Ver.3.4.0）」を併せて参照すると理解が進みます。
+
+* JvLinkManager
+
+  JV-LinkをJavaから利用するには、org.stormcat.jvbeans.jvlink.JvLinkManagerを使用します。
+JvLinkManagerはJV-Link APIをJava用に使いやすくしたインタフェースを提供します。
+
+** JvLinkManagerの取得
+
+  JvLinkManagerの取得方法はJvBeansを使用するプロジェクトの構造によって変わります。
+DIコンテナを使う方法と使わない方法に分けられますが、それぞれの方法は{{{sample.html}サンプル}}を参照してください。
+チュートリアルでは基本的にDIコンテナを使用する方法で解説します。
+
+** JV-Linkの初期化
+
+  データ取得要求を開始する前等、JRA-VANのサーバとやりとりする前にはJV-Linkを初期化する必要があります。
+S2Chronosであれば、Taskクラスのstart()に記述すると良いでしょう。
+ 
++------------------------------------------+
+public class Test1Task() {
+
+    public JvLinkManager jvLinkManager;
+    
+    public void start() {
+        jvLinkManager.init();
+    }
+    
+}
++------------------------------------------+
+
+** JRA-VANサーバに対するUserAgentの設定
+
+  JRA-VANサーバに対してデータ取得要求をすると、クライアントのUserAgetが送られます。
+JvLinkManagerにはUserAgentを設定できますが、設定しない場合は"UNKNOWN"で要求が行われます。
+
+  JRA-VANの登録ソフトになると、ソフトウェアに対して一意なUserAgent文字列が当てられます。
+その場合は正しいUserAgent文字列を設定しなければなりません。設定方法は２種類あります。
+  
+*** JvLinkManager#setUserAgent(String userAgent)
+
+  JvLinkManagerにUserAgent文字列をセットします。JvLinkManager#init()を実行する前にセットする必要があります。
+ 
++------------------------------------------+
+    public void start() {
+        jvLinkManager.setUserAgent("SAMPLE");
+        jvLinkManager.init();
+    }
++------------------------------------------+
+
+*** jv-beans.diconでUserAgentを設定
+
+  jv-beans.diconで、JvLinkManagerに予めUserAgentを設定することができます。プロパティ"userAgent"に対して任意の文字列を指定します。
+
++------------------------------------------+  
+    <!-- JvLinkManager(JV-Link APIを司るマネージャ) -->
+    <component name="jvLinkManager" 
+        class="org.stormcat.jvbeans.jvlink.JvLinkManagerImpl" instance="prototype" >
+        <property name="jvBeansContainer"/>
+        <property name="jvBindingDtoFactory"/>
+        <property name="userAgent">"SAMPLE"</property>
+    </component>
++------------------------------------------+
+  
+** JV-Linkのクローズ
+
+  JV-Dataのデータ取得要求・読み込み処理終了後はを正常に終了させる必要があります。
+JvLinkManager#close()を実行すると、データファイルは全てクローズされ、実行中のダウンロードスレッドは中止されます。
+例外発生時にクローズ処理が行えないと、希にデータファイルが破損する可能性があるため読み込み処理後は確実にこのメソッドを実行させることを推奨します。
+S2Chronosであれば、end()メソッドに記述すると確実に実行されます。
+
++------------------------------------------+
+public class Test1Task() {
+
+    public JvLinkManager jvLinkManager;
+    
+    public void start() {
+        jvLinkManager.init();
+    }
+    
+    public void doExecute() {
+        // データ読み込み処理
+    }
+    
+    public void end() {
+        jvLinkManager.close();
+    }
+    
+}
++------------------------------------------+
+
+** データ取得要求
+
+  蓄積系・セットアップデータのデータ取得要求をするには、JvLinkManager#open()メソッドを実行します。
+  
+*** JvReader\<T\> JvLinkManager#open(StoredOpenCondition\<T\> condition, String fromTime, DataOption dataOption)
+
+  * condition データ取得条件
+  
+  * fromTime データ読み出し開始ポイント(YYYYMMDDhhmmss形式)
+  
+  * dataOption データオプション
+  
+  取得するデータの種類は、「データ種別(DataSpec)」と「レコード種別ID(RecordTypeId)」によって決まります。
+「JV-Data仕様書_3.4.0.xls」の「データ種別一覧」のシートを併せて参照してください。
+  JvLinkManager#open()にはデータ種別とレコード種別IDを組み合わせたデータ取得条件(StoredOpenCondition)を引数として渡します。
+ただ、データ種別とレコード種別IDの組み合わせは「JV-Data仕様書_3.4.0.xls」に記述されているとおり、限定されています。
+そのためJV-Beansでは、実行時にこの組み合わせをチェックするようなバリデーション処理をするのではなく、コンパイル時点で静的に正しい組み合わせかチェックできる仕組みを提供しています。
+
+  fromTimeにはYYYYMMDDhhmmssでデータ読み出し開始ポイントを指定します。また、java.util.Date型を渡すことができるオーバーロードメソッドも提供しています。
+  
+  dataOptionには適切なDataOptionのEnum値を指定します。
+  
+*** StoredDataResolver（蓄積系）、SetupDataResolver（セットアップ）によりStoredOpenConditionを生成する。
+
+  蓄積系であれば"org.stormcat.jvbeans.jvlink.definitions.resolver.StoredDataResolver"、セットアップであれば"org.stormcat.jvbeans.jvlink.definitions.resolver.SetupDataResolver"でStoredOpenConditionを生成することができます。
+例えば、「蓄積系・RACE・SE（馬毎レース情報）」という条件であればStoredDataResolver._RACE()._SE()といったようにメソッドチェインに条件を生成することができます。
+これをopenメソッドに渡すことで、「蓄積系・RACE・SE（馬毎レース情報）」に対応するDTO(HorseRaceInfoDto)を型パラメータに持つJVReader（後述）を取得できます。
+このように流れるようにタイプセーフなインタフェースを提供しています。
+
++------------------------------------------+
+    public void doExecute() {
+        JvReader<HorseRaceInfoDto> reader = 
+            jvLinkManager.open(StoredDataResolver._RACE()._SE() ,"20100601000000", DataOption.STANDARD);        
+    }
++------------------------------------------+
+  
+  対して、速報系のデータ取得要求をするには、JvLinkManager#rtOpen()メソッドを実行します。
+  
+*** JvReader\<T\> rtOpen(RealTimeOpenCondition\<T\> condition, RtOpenKey rtOpenKey);
+
+  * condition データ取得条件
+  
+  * rtOpenKey 速報系要求キー
+
+  rtOpenKeyにはデータの提供単位を表現するキーを指定します。org.stormcat.jvbeans.jvlink.definitions.key.rtopen.RtOpenKeyFactoryというstaticファクトリでキーを生成します。
+キーの形式については、RtOpenKeyFactoryのJavadocもしくは「ＪV-Linkインターフェース仕様書_3.4.0(Win).pdf」のJVRTOpenの項目を参照してください。
+  
+*** RealTimeDataResolver（セットアップ）によりRealTimeOpenConditionを生成する。
+  
+  蓄積系・セットアップデータと同じように、速報系データも"org.stormcat.jvbeans.jvlink.definitions.resolver.RealTimeDataResolver"でRealTimeOpenConditionを生成することができます。
+  
+** データの読み出し開始
+
+  JvLinkManager#open, rtOpenが正常終了し、JvReaderが取得できたらデータの読み出し処理を開始します。
+  
+*** JvReader
+
+  org.stormcat.jvbeans.jvlink.JvReaderをイテレートすることでデータを1件ずつ読みだすことができます。JvReaderはjava.lang.Iterableを実装しているため、
+拡張forループで対象のDTOを1件ずつ取り出すことができます。
+
++------------------------------------------+
+    public void doExecute() {
+        JvReader<HorseRaceInfoDto> reader = 
+            jvLinkManager.open(StoredDataResolver._RACE()._SE() ,"20100601000000", DataOption.STANDARD);
+            
+        for (HorseRaceInfoDto dto : reader) {
+            System.out.println(dto.toString());
+        }
+    }
++------------------------------------------+
+
+  JvReaderから取り出されたDTOには、JV-Data文字列が「JV-Data仕様書Excel版」の「フォーマット」シートを基にDTOに自動的にバインディングされます。
+また、dtoをtoString()することで元のJV-Data文字列が取得できます。
+
+** JV-DataのDTOへのバインディングを行わずにデータを読み出す
+
+  通常のopen・rtOpenメソッドで取得したJvReaderはJvBindingDtoの制限型パラメータを持っており、必ずJV-Dataのバインディングが行われます。
+しかし、DTOにバインディングせず文字列だけ取り出したいというシーンもあるでしょう。その場合は、open時にStringの型パラメータを持つJvReaderを返すメソッドを使用します。
+
+*** JvReader\<String\> simpleOpen(StoredOpenCondition\<T\> condition, String fromTime, DataOption dataOption);
+
+  通常・セットアップ系用のString型JvReader取得用メソッドです。
+
+*** JvReader\<String\> rtSimpleOpen(RealTimeOpenCondition\<T\> condition, RtOpenKey rtOpenKey);
+
+  速報系用のString型JvReader取得用メソッドです。
+  
+  取得したString型JvReaderは、同じように拡張forループで1件ずつ取り出すことができます。  
+
++------------------------------------------+
+    public void doExecute() {
+        JvReader<String> reader = 
+            jvLinkManager.simpleOpen(StoredDataResolver._DIFF()._SE(), 
+                    "20100601000000", DataOption.STANDARD);
+        
+        for (String s : reader) {
+            System.out.println(s);
+        }
+    }
++------------------------------------------+
+
+** [New!!]JV-Dataの出力形式を変更する
+
+  JV-BeansはデフォルトではJV-Linkから取得した固定長のデータをそのまま返します。ただ、固定長のままでは使いにくいのでCSV、TSV形式にして出力することができます。
+  
+*** void JvReader#setOutputType(FileExtension extension)
+
+  取得したJvReaderに対し、setOutputTypeでファイル種別を指定します。FileExtensionはenumであり、CSV・TSVのどちらかを指定します。setOutputTypeを行わなければデフォルトの固定長データで出力されます。
+  
++------------------------------------------+
+    public void doExecute() {
+        JvReader<String> reader = 
+            jvLinkManager.simpleOpen(StoredDataResolver._DIFF()._SE(), 
+                    "20100601000000", DataOption.STANDARD);
+                    
+        reader.setOutputType(FileExtension.CSV);
+        
+        for (String s : reader) {
+            System.out.println(s);
+        }
+    }
++------------------------------------------+
+
+* JvBindingDtoFactory
+
+** テキストファイルからバインディングDTOを生成する
+
+  JV-Beansの利用方法として、JvReaderで読みだしたDTOをそれぞれ加工して表示させたり、DBに格納する用途があるかと思われますが、
+一度JV-Dataをテキストファイルに書き出してから、別のバッチでファイルを読み込んでDBに格納するという用途も考えられます。
+そのような場合は、org.stormcat.jvbeans.jvlink.analyze.JvBindingDtoFactoryを使用してテキストファイルを読み込んで文字列からDTOを構築することが可能です。
+
+*** JvBindingDto JvBindingDtoFactory#create(String str)
+
+  JV-Data1レコードの文字列をDTOにバインディングします。この場合は、文字列中のレコード種別IDを見てバインディングDTOを判断します。
+JvBindingDtoを具象クラスではないため、DTOの各プロパティを取り出せるようにするには呼び出し側で適切にキャストしなくてはなりません。
+
+*** \<T extends JvBindingDto\> T JvBindingDtoFactory#create(String str, OpenConfition\<T\> condition)
+
+  JV-Data1レコードの文字列を指定したDTOにバインディングします。read系メソッドと同様にOpenCondtionを第2引数に指定します。
+OpenConditionの型パラメータからバインディングされる型が決まりますが、バインディング処理をする文字列がOpenConfitionで指定した型のRecordTypeIdの型に合致していることが必要です。
+実装の可読性を上げるためにも、１つのファイルには同じレコード種別IDのデータだけを書き出す形式にすると良いでしょう。
+このメソッドに指定するOpenCondtionhaは、先述のResolverから導き出すのがわかりやすいです。
+
++------------------------------------------+
+public class ReadAndBindTask {
+
+    public JvBindingDtoFactory jvBindingDtoFactory;
+    
+    public void doExecute() {
+        
+        BufferedReader reader = BufferedReaderUtil.getReader("test_SE.txt", Charset.MS932);
+        
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                HorseRaceInfoDto dto = jvBindingDtoFactory.create(line, StoredDataResolver._RACE()._SE());
+                System.out.println(dto.toString());
+            }
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+        
+        IOUtils.closeQuietly(reader);
+    }
+    
+}
++------------------------------------------+
+
+** [New!!]JV-Dataの入力形式を変更する
+
+  出力でCSV、TSV形式が指定できたように、ファイルからデータをバインディングしたDTOを生成する際もCSV、TSV形式のファイルを入力することができます。
+  
+*** void setInputType(FileExtension inputType)
+
++------------------------------------------+
+JvBindingDtoFactory factory = JvComponentInjector.getSingletonFactory();
+factory.setInputType(FileExtension.CSV);
+            
+BufferedReader br = BufferedReaderUtil.getReader("test_CH.tsv", Charset.MS932);
+String line = null;
+while ((line = br.readLine()) != null) {
+  TrainerMasterDto dto = factory.create(line, StoredDataResolver._DIFF()._CH());
+  System.out.println(dto);
+}
++------------------------------------------+
+
+* 動画再生要求について
+
+** JRAレーシングビューアーとの連携
+
+  JV-Link APIにはJVMVPlay等のJRAレーシングビューアーと連携した動画再生要求メソッド等が提供されていますが、
+このサービスを利用するにはJRA-VANに対して対象ソフトウェアの連携申請が必要です。しかし、JV-Beansはあくまでフレームワークであるため申請はできません。
+JV-Beansでは念のためorg.stormcat.jvbeans.jvlink.JvLinkWrapper（純粋なJV-LinkのWrapperクラス。JvLinkManagerはこれを使いやすくするためにさらにラップしている）にてMV系実装を提供していますが、
+動作保証はできてはいませんので、予めご了承下さい。

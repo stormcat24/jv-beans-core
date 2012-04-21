@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="${project.name}">
+  <bannerLeft>
+    <name>${project.name}</name>
+    <src>./images/ipmsg.png</src>
+    <href>http://sourceforge.jp/projects/jv-beans/</href>
+  </bannerLeft>
+  <body>
+    <links>
+      <item name="${project.name}" href="${project.url}"/>
+    </links>
+    <menu name="メニュー">
+      <item name="JV-Beansとは？" href="./index.html" />
+      <item name="ダウンロード・セットアップ" href="./setup.html" />
+      <item name="ライセンス" href="./license.html" />
+      <item name="チュートリアル" href="./tutorial.html"/>
+      <item name="サンプル" href="./sample.html"/>
+    </menu>
+    <menu ref="modules" />
+    <menu ref="reports" />
+  </body>
+</project>

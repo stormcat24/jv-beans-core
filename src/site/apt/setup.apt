@@ -1,0 +1,107 @@
+                                    ------
+                                    ダウンロード・セットアップ
+                                    ------
+                                    Author(a-yamada)
+                                    ------
+
+ダウンロード・セットアップ
+
+* ダウンロード
+
+ * {{{http://sourceforge.jp/projects/jv-beans/downloads/XXXXX/jv-beans-1.0.0-RC1-all.zip/} jv-beans-1.0.0-RC1-all.zip}}
+
+  jv-beans-1.0.0-RC1-all.zipを解凍してください。
+
+* セットアップ
+
+** 前提条件
+
+ * JDK5(Tiger)以上
+
+ * 「{{{http://jra-van.jp/dlb/} JRA-VAN DataLab.}}」の申し込みが必要です。
+
+ * JV-Link Ver3.4.0のインストール
+
+ * Windows2000, XP, Vista 32bitOS
+
+ * JACOBの導入
+
+** JACOB
+
+  JV-Beansでは「JACOB」というJava-COM Bridgeにより、JV-Link APIをJavaからコールしています。
+そのため、JACOBのDLLをWindowsのSystem32のディレクトリに配置する必要があります。解凍したアーカイブからjacob-1.15-M2-x86.dllをWindows/system32のディレクトリにコピーしてください。
+
+** Maven構成プロジェクトの場合
+
+*** Maven構成で任意のプロジェクトを作成します。
+
++------------------------------------------+
+mvn archetype:create -DgroupId=グループ名 -DartifactId=プロジェクト名
++------------------------------------------+
+
+*** pom.xmlに以下の記述を追加します。
+
+   使用するJV-Linkのバージョンに対応したJV-Link-Definitionsの依存を追加します。JV-Link-DefinitionsはJV-Beansに依存しているので、JV-Beansの依存をpom.xmlに記述する必要はありません。
+
++------------------------------------------+
+<project ...>
+    ...
+    <repositories>
+        <repository>
+            <id>jv-beans.sourceforge.jp</id>
+            <name>JV-Beans Maven Repository</name>
+            <url>http://jv-beans.sourceforge.jp/maven2/</url>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+          <groupId>org.stormcat</groupId>
+          <artifactId>jv-link-definitions</artifactId>
+          <version>3.4.0</version>
+        </dependency>
+    </dependencies>
+</project>
++------------------------------------------+
+
+*** src/main/resources/配下にlog4j.propertiesを配置する
+
+  JV-Beansではメインとなるloggerとしてlog4jを使用しています。内容は各プロジェクトによってカスタマイズが必要ですが、設定例を以下に示します。
+アーカイブ中のresourcesディレクトリ内に含まれています。
+
++------------------------------------------+
+### direct log messages to stdout ###
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target=System.out
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d %5p %c{1} - %m%n
+
+### direct messages to file mylog.log ###
+log4j.appender.file=org.apache.log4j.FileAppender
+log4j.appender.file.File=mylog.log
+log4j.appender.file.Append=true
+log4j.appender.file.layout=org.apache.log4j.PatternLayout
+log4j.appender.file.layout.ConversionPattern=%d %5p %c{1} - %m%n
+
+log4j.rootLogger=debug, stdout, file
++------------------------------------------+
+
+  （※）ただし、ログラッパーとしてはslf4jを使用していますので、log4j以外のloggerに切り替えることも可能です。
+
+*** 対象のプロジェクトルートでmvn eclipse:eclipse を実行します。
+
+  -DdownloadSources=trueをつけるとソースも一緒にダウンロードします。
+
++------------------------------------------+
+mvn -e eclipse:eclipse -DdownloadSources=true
++------------------------------------------+
+
+
+** 普通のプロジェクトの場合
+
+*** 必要なJarファイルをビルドパスに追加する
+
+  アーカイブ中のlibディレクトリ中のjv-beans-1.0.0-RC1.jar、jv-link-definitions-3.4.0.jar、並びに他の依存Jarファイルをビルドパスに追加します。
+
+*** ソースディレクトリ直下にlog4j.propertiesを配置する
+
+  アーカイブ中のresourcesディレクトリ内からコピーして配置してください。

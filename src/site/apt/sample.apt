@@ -1,0 +1,229 @@
+                                    ------
+                                    サンプル
+                                    ------
+                                    Author(a-yamada)
+                                    ------
+
+サンプル
+
+* サンプルコードのダウンロード
+
+** SVNからチェックアウト
+
+  後述するサンプルプログラムは、SVNリポジトリに配置されています。checkoutして使ってみてください。
+  
+  {{{http://svn.sourceforge.jp/svnroot/jv-beans/trunk/jv-beans-sample/} jv-beans-sample}}
+
+* 非DIコンテナ環境でのサンプル
+
+  DIコンテナを使わないようなプロジェクトでは、JvLinkManager等の必要なコンポーネントを開発者が構築しなければなりません。
+その作業は煩雑なため、JV-Beansでは非DIコンテナ環境でも簡単にコンポーネントを取得できるような仕組みを用意しています。
+
+** JvComponentInjector
+
+  org.stormcat.jvbeans.jvlink.JvComponentInjectorを使えば、必要なコンポーネントをnewせずに取得することができます。
+  
+  * static void JvComponentInjector#init(String dtoPackage)
+  
+  DTOのルートパッケージ(org.stormcat.jvbeans.dto)を指定し、必要なコンポーネントを初期化します。初期処理のため、最初に1度呼び出すだけで良いです。
+  
+  * static JvBeansContainer JvComponentInjector#getSingletonContainer()
+  
+  初期化済みの一意なJvBeansContainerを取得します。
+  
+  * static JvBindingDtoFactory JvComponentInjector#getSingletonFactory()
+  
+  初期化済みの一意なJvBindingDtoFactoryを取得します。
+  
+  * static JvLinkManager JvComponentInjector#createJvLinkManager();
+  
+  必要なコンポーネントを保持したJvLinkManagerを新たに生成します。
+  
+** サンプルコード
+
+  蓄積系・DIFF・KSをJvComponentInjectorを使って取得するサンプルを以下に示します。
+
++------------------------------------------+
+package org.stormcat.jvbeans.sample.main;
+
+public class JvBeansSimpleSample {
+
+    public static void main(String[] args) throws Exception {
+        JvComponentInjector.init("org.stormcat.jvbeans.jvlink.definitions.dto");
+        JvLinkManager manager = JvComponentInjector.createJvLinkManager();
+        manager.init();
+        
+        try {
+            JvReader<JockeyMasterDto> reader = 
+                manager.open(StoredDataResolver._DIFF()._KS(), "20100601000000", DataOption.STANDARD);
+            
+            for (JockeyMasterDto dto : reader) {
+                System.out.println(dto.toString());
+            }
+            
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            manager.close();
+        }
+    }
+
+}
++------------------------------------------+
+
+* Seasar2(S2Chronos)でのサンプル
+
+  コンポーネント管理ができるようなDIコンテナ上でJV-Beansを使うためのサンプルを提供します。
+  
+** diconの設定
+
+*** JV-Beansのコンポーネント登録設定
+
+  コンポーネント管理が必要なクラスとして、JV-Beansでは最低限以下のクラスが必要です。
+
+  * org.stormcat.jvbeans.jvlink.analyze.JvBeansContainer (singleton)
+ 
+  * org.stormcat.jvbeans.jvlink.analyze.JvBindingDtoFactory (singleton)
+  
+  * org.stormcat.jvbeans.jvlink.JvLinkManager (prototype)
+  
+  これらのコンポーネントをdiconに登録しておく必要があります。以下のjv-beans.diconのようなdiconファイルをapp.diconでincludeして使用するのが良いでしょう。
+  
+  * jv-beans.dicon
+  
++------------------------------------------+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components24.dtd">
+<components>
+    <!-- JvBeansContainer(バインディング情報保持コンポーネント) -->
+    <component name="jvBeansContainer" 
+        class="org.stormcat.jvbeans.jvlink.analyze.JvBeansContainer" instance="singleton">
+        <initMethod name="init">
+            <arg>"org.stormcat.jvbeans.jvlink.definitions.dto"</arg>
+        </initMethod>
+    </component>
+
+    <!--  JvBindingDtoFactory(バインディングDTO生成用ファクトリ) -->
+    <component name="jvBindingDtoFactory" 
+        class="org.stormcat.jvbeans.jvlink.analyze.JvBindingDtoFactory" instance="singleton">
+        <property name="jvBeansContainer"/>
+    </component>
+	
+    <!-- JvLinkManager(JV-Link APIを司るマネージャ) -->
+    <component name="jvLinkManager" 
+        class="org.stormcat.jvbeans.jvlink.JvLinkManagerImpl" instance="prototype" >
+        <property name="jvBeansContainer"/>
+        <property name="jvBindingDtoFactory"/>
+        <property name="userAgent">"SAMPLE"</property>
+    </component>
+
+</components>
++------------------------------------------+
+
+  * app.dicon
+  
++------------------------------------------+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.3//EN"
+	"http://www.seasar.org/dtd/components23.dtd">
+<components>
+    <include path="convention.dicon"/>
+    <include path="aop.dicon"/>
+    <include path="chronos-core.dicon"/>
+    <include path="jv-beans.dicon"/>
+</components>
++------------------------------------------+
+
+*** ルートパッケージの設定
+
+  Seasar2ではconvention.diconにルートパッケージを設定することで、配下のコンポーネントをコンテナに自動登録することができます。
+ここではサンプルのルートパッケージである"org.stormcat.jvbeans.sample"を登録します。
+
+  
+  * convention.dicon
+  
++------------------------------------------+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components24.dtd">
+<components>
+    <component class="org.seasar.framework.convention.impl.NamingConventionImpl">
+        <initMethod name="addRootPackageName">
+            <arg>"org.stormcat.jvbeans.sample"</arg>
+        </initMethod>
+    </component>
+</components>
++------------------------------------------+
+
+** Taskクラスの作成
+
+  S2ChronosではジョブをTaskクラスに定義し、スケジューリングすることができます。ルートパッケージ以下にtaskパッケージを用意し、
+任意のTaskクラスを用意します。Taskには@Taskアノテーションを付与することで、コンテナにTaskとして自動登録されます。
+ここでは、スケジューラ登録後に即実行するために@NonDelayTriggerアノテーションも併せて付与します。
+
++------------------------------------------+
+package org.stormcat.jvbeans.sample.task;
+
+@Task
+@NonDelayTrigger
+public class StoredDataTask {
+
+    public JvLinkManager jvLinkManager;
+    
+    public void start() {
+        jvLinkManager.init();
+    }
+    
+    public void doExecute() {
+        JvReader<HorseRaceInfoDto> reader = 
+            jvLinkManager.open(StoredDataResolver._RACE()._SE() ,"20100601000000", DataOption.STANDARD);
+        
+        BufferedWriter writer = BufferedWriterUtil.getWriter("test_SE.txt", Charset.MS932);
+        for (HorseRaceInfoDto dto : reader) {
+            String data = dto.toString();
+            if (StringUtil.isNotBlank(data)) {
+                System.out.println(data);
+                try {
+                    writer.append(data);
+                    writer.append("\r\n");
+                } catch (IOException e) {
+                    throw new IORuntimeException(e);
+                }
+            }
+        }
+        
+        IOUtils.closeQuietly(writer);
+    }
+    
+    public void end() {
+        jvLinkManager.close();
+    }
+    
+}
++------------------------------------------+
+
+*** コンポーネントのDI
+
+  このTaskは蓄積系・RACE・SEのデータを取得するので、JvLinkManagerが必要となります。
+Seasar2.4以降では、必要なコンポーネントをpublicフィールドとして定義することで自動的にDIしてくれます。
+そのため、JvLinkManagerをpublicフィールドとして定義しています。フィールド名はjv-beans.diconで登録したコンポーネント名称と同じにします。
+JvLinkManagerだけではなく、JvBeansContainerやJvBindingDtoFactoryもpublicフィールドとして定義することでDIできます。
+
+*** start(開始処理)
+
+  本処理の前処理を記述します。この場合は、JV-Linkの初期化を行います。
+
+*** doExecute(本処理)
+
+  タスクの本処理を記述します。蓄積系・RACE・SEのデータ取得要求を発行し、取得したデータをファイルに書き出しています。
+
+*** end(終了処理)
+
+  タスクの終了処理を記述します。doExecute内で例外が発生し、異常終了した場合でも正常にJV-Linkをcloseすることができます。
+  
+*** タスクの実行
+
+  タスクを実行するには、まずスケジューラーを起動します。
+org.stormcat.jvbeans.sample.main.JvBeansSampleBatchのmainメソッドを実行するとスケジューラーが起動されます。
+StoredDataTaskは@NonDelayTriggerが付与されているため、即時実行されます。
