@@ -4,7 +4,7 @@
   <groupId>org.stormcat</groupId>
   <artifactId>jv-beans</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0-RC1</version>
+  <version>1.1.0-RC1-SNAPHOST</version>
   <name>jv-beans</name>
   <url>http://jv-beans.sourceforge.jp</url>
   <licenses>
