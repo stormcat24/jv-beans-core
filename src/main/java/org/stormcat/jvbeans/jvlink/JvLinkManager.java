@@ -263,5 +263,17 @@ public interface JvLinkManager {
      * @throws IllegalArgumentException mvRaceKeyが{@code null}の場合
      */
     JvCourseFile courseFile2(CourseFileKey courseFileKey, String filePath);
+    
+    /**
+     * TODO
+     * @return
+     */
+    JvResult watchEvent();
+    
+    /**
+     * TODO
+     * @return
+     */
+    JvResult watchEventClose();
 
 }

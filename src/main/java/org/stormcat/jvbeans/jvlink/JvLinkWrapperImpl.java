@@ -242,5 +242,21 @@ public class JvLinkWrapperImpl implements JvLinkWrapper {
         courseFile.setFilePath(filePath);
         return courseFile;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public JvResult jvWatchEvent() {
+        Variant variant = Dispatch.call(activeXComponent, "JVWatchEvent");
+        return JvResultFactory.createJvResult(variant);
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	public JvResult jvWatchEventClose() {
+        Variant variant = Dispatch.call(activeXComponent, "JVWatchEventClose");
+        return JvResultFactory.createJvResult(variant);
+	}
     
 }

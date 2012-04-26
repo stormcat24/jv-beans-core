@@ -528,4 +528,20 @@ public interface JvLinkWrapper {
      * </table>
      */
     JvCourseFile jvCourceFile2(String key, String filePath);
+    
+    /**
+     * {@code Long JVWatchEvent()}のJavaによるWrapperです。
+     * @return
+     */
+    JvResult jvWatchEvent();
+    
+    
+    /**
+     * {@code Long JVWatchEventClose()}のJavaによるWrapperです。
+     * @return
+     */
+    JvResult jvWatchEventClose();
+    
+    
+    
 }

@@ -301,6 +301,20 @@ public class JvLinkManagerImpl implements JvLinkManager {
         JvLinkExceptionHandler.handleException(courceFile);
         return courceFile;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public JvResult watchEvent() {
+		return jvLinkWrapper.jvWatchEvent();
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	public JvResult watchEventClose() {
+		return jvLinkWrapper.jvWatchEventClose();
+	}
     
     /**
      * {@inheritDoc}
