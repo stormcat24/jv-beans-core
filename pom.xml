@@ -117,8 +117,9 @@
     <repository>
       <id>jv-beans.sourceforge.jp</id>
       <name>JV-Beans Maven Repository</name>
-      <url>http://jv-beans.sourceforge.jp/maven2/</url>
+      <url>http://maven.stormcat.me/repository/</url>
     </repository>
+    <!-- 
     <repository>
       <snapshots>
         <enabled>true</enabled>
@@ -128,7 +129,9 @@
       <name>JV-Beans Maven Snapshot Repository</name>
       <url>http://jv-beans.sourceforge.jp/maven2-snapshot/</url>
     </repository>
+     -->
   </repositories>
+  <!-- 
   <distributionManagement>
     <repository>
       <uniqueVersion>false</uniqueVersion>
@@ -147,6 +150,7 @@
       <url>scp://shell.sourceforge.jp/home/groups/j/jv/jv-beans/htdocs/site/</url>
     </site>
   </distributionManagement>
+   -->
   <dependencies>
     <dependency>
       <groupId>commons-lang</groupId>
