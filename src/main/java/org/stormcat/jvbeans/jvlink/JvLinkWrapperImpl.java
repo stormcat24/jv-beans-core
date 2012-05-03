@@ -26,6 +26,7 @@ import org.stormcat.jvbeans.util.JacobUtil;
 
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
+import com.jacob.com.DispatchEvents;
 import com.jacob.com.Variant;
 
 /**
@@ -246,9 +247,11 @@ public class JvLinkWrapperImpl implements JvLinkWrapper {
     /**
      * {@inheritDoc}
      */
-	public JvResult jvWatchEvent() {
-        Variant variant = Dispatch.call(activeXComponent, "JVWatchEvent");
-        return JvResultFactory.createJvResult(variant);
+	public void jvWatchEvent() {
+		Dispatch jvlinkInterface = activeXComponent.getObject();
+		DispatchEvents event =	 new DispatchEvents(jvlinkInterface, new JvLinkEvent(), JVLINK_DLL);
+		Dispatch.callSub(jvlinkInterface, "JVWatchEvent");
+		event.safeRelease();
 	}
 
     /**

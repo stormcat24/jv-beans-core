@@ -268,7 +268,7 @@ public interface JvLinkManager {
      * TODO
      * @return
      */
-    JvResult watchEvent();
+    void watchEvent();
     
     /**
      * TODO

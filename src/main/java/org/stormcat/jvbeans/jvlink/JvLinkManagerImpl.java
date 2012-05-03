@@ -305,8 +305,8 @@ public class JvLinkManagerImpl implements JvLinkManager {
     /**
      * {@inheritDoc}
      */
-	public JvResult watchEvent() {
-		return jvLinkWrapper.jvWatchEvent();
+	public void watchEvent() {
+		jvLinkWrapper.jvWatchEvent();
 	}
 
     /**

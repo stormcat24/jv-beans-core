@@ -533,7 +533,7 @@ public interface JvLinkWrapper {
      * {@code Long JVWatchEvent()}のJavaによるWrapperです。
      * @return
      */
-    JvResult jvWatchEvent();
+    void jvWatchEvent();
     
     
     /**
