@@ -10,7 +10,7 @@ import com.jacob.com.Variant;
  * @author a.yamada
  * @since 1.1.0
  */
-class JvLinkEventCallback {
+public class JvLinkEventCallback {
 	
 	private final Logger logger = LoggerFactory.getLogger(JvLinkEventCallback.class);
 	
