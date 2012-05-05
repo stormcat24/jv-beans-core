@@ -46,6 +46,8 @@ public class JvLinkWrapperImpl implements JvLinkWrapper {
     
     /** JvlinkのDLL名({@value})です。 */
     private static final String JVLINK_DLL = "JVDTLab.JVLink.1";
+    
+    private DispatchEvents dispatchEvents;
 
     public JvLinkWrapperImpl() {
         this.activeXComponent = new ActiveXComponent(JVLINK_DLL);
@@ -247,17 +249,19 @@ public class JvLinkWrapperImpl implements JvLinkWrapper {
     /**
      * {@inheritDoc}
      */
-	public void jvWatchEvent() {
+	public void jvWatchEvent(JvLinkEventHandler eventHandler) {
 		Dispatch jvlinkInterface = activeXComponent.getObject();
-		DispatchEvents event =	 new DispatchEvents(jvlinkInterface, new JvLinkEvent(), JVLINK_DLL);
+		dispatchEvents = new DispatchEvents(jvlinkInterface, new JvLinkEventCallback(eventHandler), JVLINK_DLL);
 		Dispatch.callSub(jvlinkInterface, "JVWatchEvent");
-		event.safeRelease();
 	}
 
     /**
      * {@inheritDoc}
      */
 	public JvResult jvWatchEventClose() {
+		if (dispatchEvents != null) {
+			dispatchEvents.safeRelease();
+		}
         Variant variant = Dispatch.call(activeXComponent, "JVWatchEventClose");
         return JvResultFactory.createJvResult(variant);
 	}

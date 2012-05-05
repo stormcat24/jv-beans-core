@@ -27,6 +27,7 @@ import org.stormcat.jvbeans.config.condition.RealTimeOpenCondition;
 import org.stormcat.jvbeans.config.condition.StoredOpenCondition;
 import org.stormcat.jvbeans.config.key.CourseFileKey;
 import org.stormcat.jvbeans.config.key.RtOpenKey;
+import org.stormcat.jvbeans.exception.JvBeansRuntimeException;
 import org.stormcat.jvbeans.jvlink.analyze.JvBeansContainer;
 import org.stormcat.jvbeans.jvlink.analyze.JvBindingDtoFactory;
 import org.stormcat.jvbeans.response.JvCourseFile;
@@ -61,6 +62,8 @@ public class JvLinkManagerImpl implements JvLinkManager {
     /** {@link JvBindingDtoFactory}です。 */
     private JvBindingDtoFactory jvBindingDtoFactory;
     
+    /** {@link JvLinkEventHandler} */
+    private JvLinkEventHandler jvLinkEventHandler;
     
     /**
      * 
@@ -306,7 +309,10 @@ public class JvLinkManagerImpl implements JvLinkManager {
      * {@inheritDoc}
      */
 	public void watchEvent() {
-		jvLinkWrapper.jvWatchEvent();
+		if (jvLinkEventHandler == null) {
+			throw new JvBeansRuntimeException("JvLinkManagerにJvLinkEventHandlerの実装をセットする必要があります。");
+		}
+		jvLinkWrapper.jvWatchEvent(jvLinkEventHandler);
 	}
 
     /**
@@ -375,8 +381,16 @@ public class JvLinkManagerImpl implements JvLinkManager {
     public void setJvBindingDtoFactory(JvBindingDtoFactory jvBindingDtoFactory) {
         this.jvBindingDtoFactory = jvBindingDtoFactory;
     }
-
+    
+    
     /**
+     * {@inheritDoc}
+     */
+    public void setJvLinkEventHandler(JvLinkEventHandler jvLinkEventHandler) {
+		this.jvLinkEventHandler = jvLinkEventHandler;
+	}
+
+	/**
      * {@link JvLinkWrapper}を返します。
      * @return jvLinkWrapper {@link JvLinkWrapper}
      */

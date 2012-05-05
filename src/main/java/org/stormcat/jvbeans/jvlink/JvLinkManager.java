@@ -265,15 +265,24 @@ public interface JvLinkManager {
     JvCourseFile courseFile2(CourseFileKey courseFileKey, String filePath);
     
     /**
-     * TODO
-     * @return
+     * JV-Linkからされるイベント通知を受信可能にします。
+     * <p>ただし、実行しているプログラムはアプリケーションサーバ、あるいはデーモンプログラムによって常駐化しておく必要があります。
+     * @since 1.1.0
      */
     void watchEvent();
     
     /**
-     * TODO
-     * @return
+     * {@link JvLinkManager#watchEvent()}でされたイベント通知可能状態を終了します。
+     * @return 結果オブジェクト
+     * @since 1.1.0
      */
     JvResult watchEventClose();
+    
+    /**
+     * {@link JvLinkEventHandler}をセットします。
+     * @param jvLinkEventHandler {@link JvLinkEventHandler}
+     * @since 1.1.0
+     */
+    void setJvLinkEventHandler(JvLinkEventHandler jvLinkEventHandler);
 
 }

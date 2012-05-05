@@ -531,14 +531,22 @@ public interface JvLinkWrapper {
     
     /**
      * {@code Long JVWatchEvent()}のJavaによるWrapperです。
-     * @return
+     * @param eventHandler {@link JvLinkEventHandler}
+     * @since 1.1.0
      */
-    void jvWatchEvent();
+    void jvWatchEvent(JvLinkEventHandler eventHandler);
     
     
     /**
      * {@code Long JVWatchEventClose()}のJavaによるWrapperです。
-     * @return
+     * @return 結果オブジェクト
+     * <p>リターンコード（{@link JvResult#getReturnCode()}参照）
+     * <table border="0" cellspacing="3" cellpadding="0">
+     *   <th>リターンコード<th>内容
+     *   <tr><td>{@code 0}<td>正常
+     *   <tr><td>{@code -1}<td>エラー
+     * </table>
+     * @since 1.1.0
      */
     JvResult jvWatchEventClose();
     
