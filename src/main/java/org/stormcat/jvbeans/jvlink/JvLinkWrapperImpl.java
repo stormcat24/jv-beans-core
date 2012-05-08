@@ -15,6 +15,8 @@
  */
 package org.stormcat.jvbeans.jvlink;
 
+import java.io.UnsupportedEncodingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.stormcat.jvbeans.response.JvContents;
@@ -137,7 +139,12 @@ public class JvLinkWrapperImpl implements JvLinkWrapper {
                 vBuff, size, vFileName);
         JvContents<?> contents = JvResultFactory.createJvResult(variant, JvContents.class);
         contents.setFileName(vFileName.getStringRef());
-        contents.setLine(vBuff.getStringRef().trim());
+        try {
+			contents.setLine(new String(vBuff.getStringRef().trim().getBytes("MS932"), "MS932"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return contents; 
     }
     
