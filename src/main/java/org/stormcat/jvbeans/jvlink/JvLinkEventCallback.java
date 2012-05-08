@@ -28,7 +28,7 @@ public class JvLinkEventCallback {
 	 * JVEvtPayをキャッチし、ハンドリングメソッドへ転送します。
 	 * @param variants コールバック引数
 	 */
-	void JVEvtPay(Variant[] variants) {
+	public void JVEvtPay(Variant[] variants) {
 		logger.info("caught JV-Link event 'JVEvtPay'!");
 		handler.handlePay(getParameter(variants));
 	}
@@ -37,7 +37,7 @@ public class JvLinkEventCallback {
 	 * JVEvtJockeyChangeをキャッチし、ハンドリングメソッドへ転送します。
 	 * @param variants コールバック引数
 	 */
-	void JVEvtJockeyChange(Variant[] variants) {
+	public void JVEvtJockeyChange(Variant[] variants) {
 		logger.info("caught JV-Link event 'JVEvtJockeyChange'!");
 		handler.handleJockeyChange(getParameter(variants));
 	}
@@ -46,7 +46,7 @@ public class JvLinkEventCallback {
 	 * JVEvtWeatherをキャッチし、ハンドリングメソッドへ転送します。
 	 * @param variants コールバック引数
 	 */
-	void JVEvtWeather(Variant[] variants) {
+	public void JVEvtWeather(Variant[] variants) {
 		logger.info("caught JV-Link event 'JVEvtWeather'!");
 		handler.handleWeather(getParameter(variants));
 	}
@@ -55,7 +55,7 @@ public class JvLinkEventCallback {
 	 * JVEvtCourseChangeをキャッチし、ハンドリングメソッドへ転送します。
 	 * @param variants コールバック引数
 	 */
-	void JVEvtCourseChange(Variant[] variants) {
+	public void JVEvtCourseChange(Variant[] variants) {
 		logger.info("caught JV-Link event 'JVEvtCourseChange'!");
 		handler.handleCourseChange(getParameter(variants));
 	}
@@ -64,16 +64,16 @@ public class JvLinkEventCallback {
 	 * JVEvtTimeChangeをキャッチし、ハンドリングメソッドへ転送します。
 	 * @param variants コールバック引数
 	 */
-	void JVEvtAvoid(Variant[] variants) {
+	public void JVEvtAvoid(Variant[] variants) {
 		logger.info("caught JV-Link event 'JVEvtAvoid'!");
-		handler.handleAvoid(getParameter(variants));
+		handler.handleAvoid (getParameter(variants));
 	}
 	
 	/**
 	 * JVEvtTimeChangeをキャッチし、ハンドリングメソッドへ転送します。
 	 * @param variants コールバック引数
 	 */
-	void JVEvtTimeChange(Variant[] variants) {
+	public void JVEvtTimeChange(Variant[] variants) {
 		logger.info("caught JV-Link event 'JVEvtTimeChange'!");
 		handler.handleTimeChange(getParameter(variants));
 	}
@@ -82,7 +82,7 @@ public class JvLinkEventCallback {
 	 * JVEvtWeightをキャッチし、ハンドリングメソッドへ転送します。
 	 * @param variants コールバック引数
 	 */
-	void JVEvtWeight(Variant[] variants) {
+	public void JVEvtWeight(Variant[] variants) {
 		logger.info("caught JV-Link event 'JVEvtWeight'!");
 		handler.handleWeight(getParameter(variants));
 	}
