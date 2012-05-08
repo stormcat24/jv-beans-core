@@ -65,13 +65,13 @@ public abstract class JvIncludeSeparatorDataConvertor extends JvDataConverter {
     
     private void appendString(StringBuilder builder, String data, List<JvRecordMeta> metaItems) {
         int position = 0;
-        byte[] bytes = StringUtil.getBytes(data, Charset.MS932);
+        byte[] bytes = StringUtil.getBytes(data, Charset.CP1252);
         for (JvRecordMeta meta : metaItems) {
             int byteLength = meta.getByteLength();
             int repeatCount = meta.getRepeatCount();
             for (int i = 1; i <= repeatCount; i++) {
                 byte[] parts = ArrayUtils.subarray(bytes, position, position + byteLength);
-                String rawData = StringUtil.getString(parts, Charset.MS932);
+                String rawData = StringUtil.getString(parts, Charset.CP1252);
                 List<JvRecordMeta> joinItems = meta.getJoinMetaItems();
                 if (joinItems != null && !joinItems.isEmpty()) {
                     appendString(builder, rawData, joinItems);

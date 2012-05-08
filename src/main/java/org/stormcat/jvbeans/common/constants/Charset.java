@@ -33,6 +33,9 @@ public enum Charset implements SingleValueEnum<String> {
 
     /** 文字コードMS932を表現します。 */
     MS932("MS932"),
+    
+    /** 文字コードCP1252を表現します。 */
+    CP1252("CP1252"),
 
     /** 文字コードWindows-31Jを表現します。 */
     WINDOWS31J("Windows-31J"),

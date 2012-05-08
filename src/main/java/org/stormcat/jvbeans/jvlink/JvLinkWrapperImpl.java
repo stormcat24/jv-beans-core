@@ -139,12 +139,7 @@ public class JvLinkWrapperImpl implements JvLinkWrapper {
                 vBuff, size, vFileName);
         JvContents<?> contents = JvResultFactory.createJvResult(variant, JvContents.class);
         contents.setFileName(vFileName.getStringRef());
-        try {
-			contents.setLine(new String(vBuff.getStringRef().trim().getBytes("MS932"), "MS932"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		contents.setLine(vBuff.getStringRef().trim());
         return contents; 
     }
     
