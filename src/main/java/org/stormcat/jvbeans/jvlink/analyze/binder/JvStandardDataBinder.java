@@ -49,7 +49,7 @@ public class JvStandardDataBinder extends JvDataBinder {
      */
     @Override
     public <T> void bindProperty(List<JvRecordMeta> metaItems, T dto, String data) {
-        byte[] bt = StringUtil.getBytes(data, Charset.MS932);
+        byte[] bt = StringUtil.getBytes(data, Charset.WINDOWS31J);
         bindProperty(metaItems, dto, bt);
     }
     
@@ -84,7 +84,8 @@ public class JvStandardDataBinder extends JvDataBinder {
     }
     
     private Object convert(byte[] data, JvRecordMeta meta) {
-        String rawData = JvStringUtil.trim(StringUtil.getString(data, Charset.MS932));
+    	System.out.println("***************************");
+        String rawData = JvStringUtil.trim(StringUtil.getString(data, Charset.UTF8));
         System.out.println(rawData);
         return JvBindingObjectConverter.convert(rawData, meta);
     }

@@ -330,7 +330,7 @@ public class JvLinkManagerImpl implements JvLinkManager {
             throw new IllegalArgumentException("UserAgentにnullや空文字を指定することはできません。");
         }
         
-        int length = StringUtil.getBytesLength(userAgent, Charset.MS932);
+        int length = StringUtil.getBytesLength(userAgent, Charset.WINDOWS31J);
         if (length > MAX_BYTE_LENGTH_USER_AGENT) {
             throw new IllegalArgumentException(
                     String.format("UserAgentは64バイト以下でなければいけません。: %s バイト", length));

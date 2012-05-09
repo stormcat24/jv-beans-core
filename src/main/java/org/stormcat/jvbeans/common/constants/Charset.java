@@ -39,6 +39,9 @@ public enum Charset implements SingleValueEnum<String> {
 
     /** 文字コードWindows-31Jを表現します。 */
     WINDOWS31J("Windows-31J"),
+    
+    /** 文字コードWindows-1252を表現します。 */
+    WINDOWS1252("Windows-1252"),
 
     /** 文字コードISO-8859-1を表現します。 */
     ISO8859_1("ISO-8859-1")
