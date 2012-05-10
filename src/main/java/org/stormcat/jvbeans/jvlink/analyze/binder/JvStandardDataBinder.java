@@ -49,6 +49,10 @@ public class JvStandardDataBinder extends JvDataBinder {
      */
     @Override
     public <T> void bindProperty(List<JvRecordMeta> metaItems, T dto, String data) {
+    	System.out.println("*************************");
+    	System.out.println(data);
+    	System.out.println(data.getBytes().length);
+    	System.out.println();
         byte[] bt = StringUtil.getBytes(data, Charset.WINDOWS31J);
         bindProperty(metaItems, dto, bt);
     }
