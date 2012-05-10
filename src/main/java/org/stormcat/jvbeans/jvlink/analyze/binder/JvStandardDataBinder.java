@@ -84,8 +84,7 @@ public class JvStandardDataBinder extends JvDataBinder {
     }
     
     private Object convert(byte[] data, JvRecordMeta meta) {
-    	System.out.println("***************************");
-        String rawData = JvStringUtil.trim(StringUtil.getString(data, Charset.UTF8));
+        String rawData = JvStringUtil.trim(StringUtil.getString(data, Charset.WINDOWS31J));
         System.out.println(rawData);
         return JvBindingObjectConverter.convert(rawData, meta);
     }
