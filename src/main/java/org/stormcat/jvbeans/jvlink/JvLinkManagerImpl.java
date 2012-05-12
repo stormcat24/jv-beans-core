@@ -23,6 +23,7 @@ import org.stormcat.jvbeans.common.constants.Charset;
 import org.stormcat.jvbeans.common.lang.DateUtil;
 import org.stormcat.jvbeans.common.lang.StringUtil;
 import org.stormcat.jvbeans.config.DataOption;
+import org.stormcat.jvbeans.config.Environment;
 import org.stormcat.jvbeans.config.condition.RealTimeOpenCondition;
 import org.stormcat.jvbeans.config.condition.StoredOpenCondition;
 import org.stormcat.jvbeans.config.key.CourseFileKey;
@@ -330,7 +331,7 @@ public class JvLinkManagerImpl implements JvLinkManager {
             throw new IllegalArgumentException("UserAgentにnullや空文字を指定することはできません。");
         }
         
-        int length = StringUtil.getBytesLength(userAgent, Charset.WINDOWS1252);
+        int length = StringUtil.getBytesLength(userAgent, Environment.INSTANCE.getDefaultCharset());
         if (length > MAX_BYTE_LENGTH_USER_AGENT) {
             throw new IllegalArgumentException(
                     String.format("UserAgentは64バイト以下でなければいけません。: %s バイト", length));

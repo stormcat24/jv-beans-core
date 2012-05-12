@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.stormcat.jvbeans.common.constants.Charset;
 import org.stormcat.jvbeans.common.constants.FileExtension;
 import org.stormcat.jvbeans.common.lang.StringUtil;
+import org.stormcat.jvbeans.config.Environment;
 import org.stormcat.jvbeans.jvlink.analyze.JvBeansContainer;
 import org.stormcat.jvbeans.jvlink.analyze.JvRecordMeta;
 import org.stormcat.jvbeans.util.JvStringUtil;
@@ -65,13 +66,13 @@ public abstract class JvIncludeSeparatorDataConvertor extends JvDataConverter {
     
     private void appendString(StringBuilder builder, String data, List<JvRecordMeta> metaItems) {
         int position = 0;
-        byte[] bytes = StringUtil.getBytes(data, Charset.WINDOWS1252);
+        byte[] bytes = StringUtil.getBytes(data, Environment.INSTANCE.getDefaultCharset());
         for (JvRecordMeta meta : metaItems) {
             int byteLength = meta.getByteLength();
             int repeatCount = meta.getRepeatCount();
             for (int i = 1; i <= repeatCount; i++) {
                 byte[] parts = ArrayUtils.subarray(bytes, position, position + byteLength);
-                String rawData = StringUtil.getString(parts, Charset.WINDOWS1252);
+                String rawData = StringUtil.getString(parts, Environment.INSTANCE.getDefaultCharset());
                 List<JvRecordMeta> joinItems = meta.getJoinMetaItems();
                 if (joinItems != null && !joinItems.isEmpty()) {
                     appendString(builder, rawData, joinItems);

@@ -37,7 +37,6 @@ public class GenericsUtil {
         }
         
         if (ParameterizedType.class.isInstance(type)) {
-            System.out.println(ParameterizedType.class.cast(type).getActualTypeArguments()[0]);
             return getRowClass(ParameterizedType.class.cast(type).getRawType());
         }
         // TODO WildcardType

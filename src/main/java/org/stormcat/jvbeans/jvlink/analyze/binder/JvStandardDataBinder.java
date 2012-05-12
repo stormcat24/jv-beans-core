@@ -24,6 +24,7 @@ import org.stormcat.jvbeans.common.constants.Charset;
 import org.stormcat.jvbeans.common.lang.StringUtil;
 import org.stormcat.jvbeans.common.reflect.ClassUtil;
 import org.stormcat.jvbeans.common.reflect.MethodUtil;
+import org.stormcat.jvbeans.config.Environment;
 import org.stormcat.jvbeans.exception.JvBeansRuntimeException;
 import org.stormcat.jvbeans.jvlink.analyze.JvBindingObjectConverter;
 import org.stormcat.jvbeans.jvlink.analyze.JvRecordMeta;
@@ -49,11 +50,7 @@ public class JvStandardDataBinder extends JvDataBinder {
      */
     @Override
     public <T> void bindProperty(List<JvRecordMeta> metaItems, T dto, String data) {
-    	System.out.println("*************************");
-    	System.out.println(data);
-    	System.out.println(data.getBytes().length);
-    	System.out.println();
-        byte[] bt = StringUtil.getBytes(data, Charset.WINDOWS1252);
+        byte[] bt = StringUtil.getBytes(data, Environment.INSTANCE.getDefaultCharset());
         bindProperty(metaItems, dto, bt);
     }
     
@@ -88,8 +85,7 @@ public class JvStandardDataBinder extends JvDataBinder {
     }
     
     private Object convert(byte[] data, JvRecordMeta meta) {
-        String rawData = JvStringUtil.trim(StringUtil.getString(data, Charset.WINDOWS1252));
-        System.out.println(rawData);
+        String rawData = JvStringUtil.trim(StringUtil.getString(data, Environment.INSTANCE.getDefaultCharset()));
         return JvBindingObjectConverter.convert(rawData, meta);
     }
     
