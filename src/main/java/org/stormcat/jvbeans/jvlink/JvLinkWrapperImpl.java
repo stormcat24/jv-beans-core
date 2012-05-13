@@ -139,7 +139,8 @@ public class JvLinkWrapperImpl implements JvLinkWrapper {
                 vBuff, size, vFileName);
         JvContents<?> contents = JvResultFactory.createJvResult(variant, JvContents.class);
         contents.setFileName(vFileName.getStringRef());
-		contents.setLine(vBuff.getStringRef().trim());
+//		contents.setLine(vBuff.getStringRef().trim());
+        contents.setLine(vBuff.getStringRef());
         return contents; 
     }
     

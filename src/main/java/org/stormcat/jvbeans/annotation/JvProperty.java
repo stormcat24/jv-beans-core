@@ -58,4 +58,11 @@ public @interface JvProperty {
      */
     float correction() default 1f;
     
+    /**
+     * マルチバイト文字で構成されるプロパティであるかどうかを返します。
+     * @return 
+     * @since 1.1.0
+     */
+    boolean multibyte() default false;
+    
 }
