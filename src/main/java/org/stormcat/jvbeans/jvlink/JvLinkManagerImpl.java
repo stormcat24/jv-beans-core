@@ -23,7 +23,6 @@ import org.stormcat.jvbeans.common.constants.Charset;
 import org.stormcat.jvbeans.common.lang.DateUtil;
 import org.stormcat.jvbeans.common.lang.StringUtil;
 import org.stormcat.jvbeans.config.DataOption;
-import org.stormcat.jvbeans.config.Environment;
 import org.stormcat.jvbeans.config.condition.RealTimeOpenCondition;
 import org.stormcat.jvbeans.config.condition.StoredOpenCondition;
 import org.stormcat.jvbeans.config.key.CourseFileKey;

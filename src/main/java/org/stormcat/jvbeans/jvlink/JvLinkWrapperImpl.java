@@ -15,8 +15,6 @@
  */
 package org.stormcat.jvbeans.jvlink;
 
-import java.io.UnsupportedEncodingException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.stormcat.jvbeans.response.JvContents;
@@ -139,23 +137,7 @@ public class JvLinkWrapperImpl implements JvLinkWrapper {
                 vBuff, size, vFileName);
         JvContents<?> contents = JvResultFactory.createJvResult(variant, JvContents.class);
         contents.setFileName(vFileName.getStringRef());
-//		contents.setLine(vBuff.getStringRef().trim());
-        
-        String ref = vBuff.getStringRef();
-        try {
-        	String win1252toutf = new String(ref.getBytes("windows-1252"), "UTF-8");
-        	String win31toutf = new String(ref.getBytes("windows-31j"), "UTF-8");
-        	String utftoutf = new String(ref.getBytes("UTF-8"), "UTF-8");
-        	String win1252to1252 = new String(ref.getBytes("windows-1252"), "windows-1252");
-        	System.out.println("1:" + win1252toutf);
-        	System.out.println("2:" + win31toutf);
-        	System.out.println("3:" + utftoutf);
-        	System.out.println("4:" + win1252to1252);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-        
-        contents.setLine(ref);
+		contents.setLine(vBuff.getStringRef());
         return contents; 
     }
     
