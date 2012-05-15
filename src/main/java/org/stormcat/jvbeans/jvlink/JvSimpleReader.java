@@ -67,6 +67,7 @@ public class JvSimpleReader<T extends JvBindingDto> implements JvReader<String> 
              */
             public String next() {
                 JvContents<T> contents = iterator.next();
+                System.out.println("RAW:" + contents.toString());
                 JvDataConverter convertor = JvDataConverterFactory.createConvertor(outputType);
                 contents.setLine(convertor.convert(jvBeansContainer, contents.getLine()));
                 return contents.getLine();
