@@ -30,6 +30,7 @@ import org.stormcat.jvbeans.exception.jvlink.JvLinkNotOpenedException;
 import org.stormcat.jvbeans.exception.jvlink.JvLinkParameterException;
 import org.stormcat.jvbeans.exception.jvlink.JvLinkServerException;
 import org.stormcat.jvbeans.exception.jvlink.JvLinkSetupFailedException;
+import org.stormcat.jvbeans.response.JvContents;
 import org.stormcat.jvbeans.response.JvResult;
 import org.stormcat.jvbeans.response.JvSimpleResult;
 
@@ -221,16 +222,18 @@ public class JvLinkExceptionFactoryTest extends JvBeansBaseTest {
     
     @Test
     public void create402() {
-        JvResult result = new JvSimpleResult();
+    	JvContents<JvBindingDto> result = new JvContents<JvBindingDto>();
         result.setReturnCode(-402);
+        result.setFileName("hoge.jvd");
         JvLinkException e = JvLinkExceptionFactory.create(result);
         assertTrue(e instanceof JvLinkIllegalDownloadFileException);
     }
     
     @Test
     public void create403() {
-        JvResult result = new JvSimpleResult();
+    	JvContents<JvBindingDto> result = new JvContents<JvBindingDto>();
         result.setReturnCode(-403);
+        result.setFileName("hoge.jvd");
         JvLinkException e = JvLinkExceptionFactory.create(result);
         assertTrue(e instanceof JvLinkIllegalDownloadFileException);
     }
