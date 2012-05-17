@@ -30,6 +30,7 @@ import org.stormcat.jvbeans.exception.jvlink.JvLinkNotOpenedException;
 import org.stormcat.jvbeans.exception.jvlink.JvLinkParameterException;
 import org.stormcat.jvbeans.exception.jvlink.JvLinkServerException;
 import org.stormcat.jvbeans.exception.jvlink.JvLinkSetupFailedException;
+import org.stormcat.jvbeans.response.JvContents;
 import org.stormcat.jvbeans.response.JvResult;
 
 
@@ -100,9 +101,9 @@ class JvLinkExceptionFactory {
         } else if (JvLinkErrorCode._401.isSameError(result)) {
             return new JvLinkInternalException();
         } else if (JvLinkErrorCode._402.isSameError(result)) {
-            return new JvLinkIllegalDownloadFileException(JvLinkErrorCode._402);
+            return new JvLinkIllegalDownloadFileException(JvLinkErrorCode._402, ((JvContents<?>) result).getFileName());
         } else if (JvLinkErrorCode._403.isSameError(result)) {
-            return new JvLinkIllegalDownloadFileException(JvLinkErrorCode._403);
+            return new JvLinkIllegalDownloadFileException(JvLinkErrorCode._403, ((JvContents<?>) result).getFileName());
         } else if (JvLinkErrorCode._411.isSameError(result)) {
             return new JvLinkServerException(JvLinkErrorCode._411);
         } else if (JvLinkErrorCode._412.isSameError(result)) {

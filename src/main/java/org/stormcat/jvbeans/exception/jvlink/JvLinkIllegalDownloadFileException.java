@@ -28,13 +28,25 @@ public class JvLinkIllegalDownloadFileException extends JvLinkException {
      * SerialVersionUID
      */
     private static final long serialVersionUID = -2035509523759808338L;
+    
+    private final String errorFile;
 
     /**
      * 
      * コンストラクタ
      * @param jvLinkErrorCode エラーコード
      */
-    public JvLinkIllegalDownloadFileException(JvLinkErrorCode jvLinkErrorCode) {
+    public JvLinkIllegalDownloadFileException(JvLinkErrorCode jvLinkErrorCode, String errorFile) {
         super(jvLinkErrorCode);
+        this.errorFile = errorFile; 
     }
+
+    /**
+     * エラーファイル名を取得します。
+     * @return エラーファイル名
+     */
+	public String getErrorFile() {
+		return errorFile;
+	}
+    
 }
