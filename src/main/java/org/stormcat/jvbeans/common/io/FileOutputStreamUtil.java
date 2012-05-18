@@ -36,8 +36,12 @@ public class FileOutputStreamUtil {
     }
 
     public static FileOutputStream getStream(File outFile) {
+    	return getStream(outFile, false);
+    }
+    
+    public static FileOutputStream getStream(File outFile, boolean append) {
         try {
-            return new FileOutputStream(outFile);
+            return new FileOutputStream(outFile, append);
         } catch (FileNotFoundException e) {
             throw new IORuntimeException(e);
         }
