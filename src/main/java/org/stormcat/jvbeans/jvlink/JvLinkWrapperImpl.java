@@ -17,6 +17,7 @@ package org.stormcat.jvbeans.jvlink;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.stormcat.jvbeans.exception.JvComException;
 import org.stormcat.jvbeans.response.JvContents;
 import org.stormcat.jvbeans.response.JvCourseFile;
 import org.stormcat.jvbeans.response.JvMvContents;
@@ -27,6 +28,7 @@ import org.stormcat.jvbeans.util.JacobUtil;
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
 import com.jacob.com.DispatchEvents;
+import com.jacob.com.JacobException;
 import com.jacob.com.Variant;
 
 /**
@@ -133,11 +135,13 @@ public class JvLinkWrapperImpl implements JvLinkWrapper {
     public JvContents<?> jvRead(long size) {
         Variant vBuff = JacobUtil.getRefVariant(String.class);
         Variant vFileName = JacobUtil.getRefVariant(String.class);
-        Variant variant = Dispatch.call(activeXComponent, "JVRead", 
-                vBuff, size, vFileName);
+        Variant variant = call("JVRead", vBuff, size, vFileName);
+        String fileName = vFileName.getStringRef();
+        String line = vBuff.getStringRef();
+        JvLastSuccessRepository.setLastSuccess(new JvLastSuccess(fileName, line));
         JvContents<?> contents = JvResultFactory.createJvResult(variant, JvContents.class);
-        contents.setFileName(vFileName.getStringRef());
-		contents.setLine(vBuff.getStringRef());
+        contents.setFileName(fileName);
+		contents.setLine(line);
         return contents; 
     }
     
@@ -265,5 +269,13 @@ public class JvLinkWrapperImpl implements JvLinkWrapper {
         Variant variant = Dispatch.call(activeXComponent, "JVWatchEventClose");
         return JvResultFactory.createJvResult(variant);
 	}
+	
+    private Variant call(String methodName, Object ... attributes) {
+    	try {
+    		return Dispatch.call(activeXComponent, methodName, attributes);
+    	} catch (JacobException e) {
+    		throw new JvComException(e, JvLastSuccessRepository.getLastFileName());
+		}
+    }
     
 }

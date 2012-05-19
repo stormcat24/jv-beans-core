@@ -26,13 +26,15 @@ import org.stormcat.jvbeans.config.RecordTypeId;
 public abstract class OpenCondition <T> {
 
     /** データ種別 */
-    private DataSpec dataSpec;
+    private final DataSpec dataSpec;
 
     /** レコード種別ID */
-    private RecordTypeId recordTypeId;
+    private final RecordTypeId recordTypeId;
 
     /** バインディング型 */
-    private Class<T> type;
+    private final Class<T> type;
+    
+    private String skipFile;
 
     /**
      * コンストラクタ
@@ -70,5 +72,12 @@ public abstract class OpenCondition <T> {
         return type;
     }
 
+	public String getSkipFile() {
+		return skipFile;
+	}
 
+	public void setSkipFile(String skipFile) {
+		this.skipFile = skipFile;
+	}
+    
 }

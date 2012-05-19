@@ -17,6 +17,7 @@ package org.stormcat.jvbeans.jvlink;
 
 import java.util.Iterator;
 
+import org.stormcat.jvbeans.common.lang.StringUtil;
 import org.stormcat.jvbeans.common.lang.ThreadUtil;
 import org.stormcat.jvbeans.config.condition.OpenCondition;
 import org.stormcat.jvbeans.config.condition.StoredOpenCondition;
@@ -90,8 +91,17 @@ public class JvDataIterator<T extends JvBindingDto> implements Iterator<JvConten
         JvBeansContainer container = jvLinkManager.getJvBeansContainer();
 
         int result = -1;
+        boolean skiped = false;
         while (result != 0) {
             contents = read(container.getRecordByteLength(condition.getRecordTypeId()));
+            String skipFile = condition.getSkipFile();
+            if (!skiped && StringUtil.isNotBlank(skipFile)) {
+            	if (contents.getFileName().equals(skipFile)) {
+            		skiped = true;
+            	}
+            	continue;
+            }
+            
             result = contents.getReturnCode();
             if (result < -1) {
                 if (result == -3) {
