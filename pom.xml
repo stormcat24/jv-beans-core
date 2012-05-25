@@ -165,7 +165,7 @@
     <dependency>
       <groupId>com.jacob</groupId>
       <artifactId>jacob</artifactId>
-      <version>1.17-M2</version>
+      <version>1.15-M4</version>
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
