@@ -32,6 +32,6 @@ public class PathUtil {
             throw new IllegalArgumentException("URLが指定されていません。");
         }
         String full = jarUrl.getFile();
-        return full.substring(6, full.indexOf("!"));
+        return full.substring(5, full.indexOf("!"));
     }
 }
